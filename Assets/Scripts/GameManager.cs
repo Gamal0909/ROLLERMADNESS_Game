@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour {
 	public GameObject beatLevelCanvas;
 
 	public AudioSource backgroundMusic;
-	public AudioClip gameOverSFX;
+	public AudioSource gameOverSFX;
 
 	[Tooltip("Only need to set if canBeatLevel is set to true.")]
 	public AudioClip beatLevelSFX;
@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour {
 			case gameStates.Death:
 				backgroundMusic.volume -= 0.01f;
 				if (backgroundMusic.volume<=0.0f) {
-					AudioSource.PlayClipAtPoint (gameOverSFX,gameObject.transform.position);
+					gameOverSFX.Play();
 
 					gameState = gameStates.GameOver;
 				}

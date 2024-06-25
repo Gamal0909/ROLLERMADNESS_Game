@@ -13,14 +13,26 @@ namespace UnityStandardAssets.Vehicles.Ball
         private const float k_GroundRayLength = 1f; // The length of the ray to check if the ball is grounded.
         private Rigidbody m_Rigidbody;
 
-
         private void Start()
         {
             m_Rigidbody = GetComponent<Rigidbody>();
             // Set the maximum angular velocity.
-            GetComponent<Rigidbody>().maxAngularVelocity = m_MaxAngularVelocity;
+            m_Rigidbody.maxAngularVelocity = m_MaxAngularVelocity;
         }
 
+        private void Update()
+        {
+            // Get input from the player.
+            float h = Input.GetAxis("Horizontal");
+            float v = Input.GetAxis("Vertical");
+            bool jump = Input.GetButton("Jump");
+
+            // Calculate the movement direction.
+            Vector3 moveDirection = new Vector3(h, 0, v);
+
+            // Call the Move function.
+            Move(moveDirection, jump);
+        }
 
         public void Move(Vector3 moveDirection, bool jump)
         {
@@ -28,19 +40,19 @@ namespace UnityStandardAssets.Vehicles.Ball
             if (m_UseTorque)
             {
                 // ... add torque around the axis defined by the move direction.
-                m_Rigidbody.AddTorque(new Vector3(moveDirection.z, 0, -moveDirection.x)*m_MovePower);
+                m_Rigidbody.AddTorque(new Vector3(moveDirection.z, 0, -moveDirection.x) * m_MovePower);
             }
             else
             {
                 // Otherwise add force in the move direction.
-                m_Rigidbody.AddForce(moveDirection*m_MovePower);
+                m_Rigidbody.AddForce(moveDirection * m_MovePower);
             }
 
             // If on the ground and jump is pressed...
             if (Physics.Raycast(transform.position, -Vector3.up, k_GroundRayLength) && jump)
             {
                 // ... add force in upwards.
-                m_Rigidbody.AddForce(Vector3.up*m_JumpPower, ForceMode.Impulse);
+                m_Rigidbody.AddForce(Vector3.up * m_JumpPower, ForceMode.Impulse);
             }
         }
     }
